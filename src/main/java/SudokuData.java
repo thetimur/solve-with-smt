@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,9 +10,17 @@ public class SudokuData {
     public SudokuData() {
         for (int i = 0; i < HEIGHT; i++) {
             for (int j = 0; j < WIDTH; j++) {
-                field[i][j] = -1;
+                field[i][j] = 0;
             }
         }
+    }
+
+    public int getHeight() {
+        return HEIGHT;
+    }
+
+    public int getWidth() {
+        return WIDTH;
     }
 
     public void setValue(int x, int y, int value) {
