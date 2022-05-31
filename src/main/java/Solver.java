@@ -37,4 +37,9 @@ public class Solver {
             }
         }
     }
+
+    public SudokuData solveSudoku() {
+        return new SudokuData();
+    }
+
 }

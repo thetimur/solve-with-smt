@@ -6,6 +6,14 @@ public class SudokuData {
     private static final int HEIGHT = 9;
     private static final int WIDTH = 9;
 
+    public SudokuData() {
+        for (int i = 0; i < HEIGHT; i++) {
+            for (int j = 0; j < WIDTH; j++) {
+                field[i][j] = -1;
+            }
+        }
+    }
+
     public void setValue(int x, int y, int value) {
         field[x][y] = value;
     }
