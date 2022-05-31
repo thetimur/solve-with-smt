@@ -26,8 +26,9 @@ public class Solver {
             // Solve formula, get model, and print variable assignment
             try (ProverEnvironment prover = context.newProverEnvironment(SolverContext.ProverOptions.GENERATE_MODELS)) {
                 prover.addConstraint(f);
-                boolean isUnsat = prover.isUnsat();
-                assert !isUnsat;
+                if (prover.isUnsat()) {
+                    return "Formula not satisfiable";
+                }
                 try (Model model = prover.getModel()) {
                     return String.format("SAT with a = %s, b = %s", model.evaluate(a), model.evaluate(b));
                 }
