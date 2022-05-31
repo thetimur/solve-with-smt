@@ -2,28 +2,98 @@ import org.sosy_lab.common.configuration.InvalidConfigurationException;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import javax.swing.border.Border;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
 public class Solution {
+    SudokuBord bord;
 
-   /* private class Table {
-        private static final int HEIGHT = 9;
-        private static final int WIDTH = 9;
+    public static class MenuPanel extends JPanel {
 
-        JTable table = new JTable(WIDTH, HEIGHT);
+        private final JTextField out = new JTextField("Here will appear your results");;
 
-        Table(SudokuData sudoku) {
+        public MenuPanel(SudokuData sudoku) {
+            setBorder(new EmptyBorder(4, 4, 4, 4));
+            setLayout(new GridBagLayout());
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.gridx = 0;
+            gbc.gridy = 1;
+            gbc.weightx = 1;
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+
+            JButton solveButton = new JButton("Solve");
+
+            solveButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (!sudoku.isSat()) {
+                        out.setText("Unsat!");
+                    } else {
+                        out.setText("Sat!");
+                    }
+                }
+            });
+
+            add(solveButton, gbc);
+            gbc.gridy++;
+            add(new JButton("Load from file"), gbc);
+            gbc.gridy++;
+            add(new JButton("Reset"), gbc);
+            gbc.gridy++;
+            add(new JButton("Save assignment"), gbc);
+            add(out);
+        }
+
+        public void setOut(String text) {
+            this.out.setText(text);
+        }
+    }
+
+    public static class SudokuBord {
+        private final JPanel bord;
+
+        SudokuBord(SudokuData sudoku) {
+            bord = new JPanel(new GridLayout(sudoku.getWidth(), sudoku.getHeight())) {
+                @Override
+                protected void paintComponent(Graphics g) {
+                    super.paintComponent(g);
+                    //g.drawImage(image, 0, 0, null);
+                    g.drawLine(0, 0, 100, 100);
+                    g.drawLine(0, 100, 100, 0);
+                }
+            };
+
+            JTextField[][] fields = new JTextField[sudoku.getHeight()][sudoku.getWidth()];
+
             for (int i = 0; i < sudoku.getHeight(); i++) {
                 for (int j = 0; j < sudoku.getWidth(); j++) {
-                    table.set
+                    fields[i][j] = new JTextField( Integer.toString(sudoku.getValue(i, j)), 2);
+
+                    int finalJ = j;
+                    int finalI = i;
+                    fields[i][j].addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            sudoku.setValue(finalI, finalJ, Integer.parseInt(fields[finalI][finalJ].getText()));
+                        }
+                    });
+
+                    bord.add(fields[i][j]);
                 }
             }
         }
+
+        public JPanel getBord() {
+            return bord;
+        }
     }
-*/
+
     private void draw() {
         try {
             JFrame frame = new JFrame();
@@ -34,32 +104,24 @@ public class Solution {
             sudoku.setValue(0, 1, 1);
             solver.solveSudoku(sudoku);
 
+            String result = "Sat!";
+
             if (!sudoku.isSat()) {
                 System.out.println("Unsat");
-            }
-            JPanel panel = new JPanel(new GridLayout(sudoku.getWidth(), sudoku.getHeight())) {
-                @Override
-                protected void paintComponent(Graphics g) {
-                    super.paintComponent(g);
-                    //g.drawImage(image, 0, 0, null);
-                    //g.drawLine(0, 0, 100, 100);
-                    //g.drawLine(0, 100, 100, 0);
-                }
-            };
-
-            JTextField[][] fields = new JTextField[sudoku.getHeight()][sudoku.getWidth()];
-
-            for (int i = 0; i < sudoku.getHeight(); i++) {
-                for (int j = 0; j < sudoku.getWidth(); j++) {
-                    fields[i][j] = new JTextField( Integer.toString(sudoku.getValue(i, j)), 2);
-                    panel.add(fields[i][j]);
-                }
+                result = "Unsat!";
             }
 
-            frame.add(panel);
+            bord = new SudokuBord(sudoku);
+
+            frame.add(bord.getBord());
+
+            MenuPanel menu = new MenuPanel(sudoku);
+            menu.setOut(result);
+
+            frame.add(menu, BorderLayout.AFTER_LINE_ENDS);
 
             frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-            frame.setTitle("OK");
+            frame.setTitle("SMT SUDOKU SOLVER");
             frame.setSize(400, 400);
 
             frame.setVisible(true);
