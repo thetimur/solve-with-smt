@@ -32,10 +32,22 @@ public class Solution {
             solveButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if (!sudoku.isSat()) {
-                        out.setText("Unsat!");
-                    } else {
-                        out.setText("Sat!");
+                    // Отладочный код!
+                    System.out.println(sudoku.getValue(0, 0));
+                    // Отладочный код!
+
+                    Solver solver = new Solver();
+
+                    try {
+                        solver.solveSudoku(sudoku);
+                        if (!sudoku.isSat()) {
+                            out.setText("Unsat!");
+                        } else {
+                            out.setText("Sat!");
+                        }
+                    } catch (Exception exception) {
+                        out.setText("Error while solving!");
+                        exception.printStackTrace();
                     }
                 }
             });
@@ -83,7 +95,6 @@ public class Solution {
                             sudoku.setValue(finalI, finalJ, Integer.parseInt(fields[finalI][finalJ].getText()));
                         }
                     });
-
                     bord.add(fields[i][j]);
                 }
             }
