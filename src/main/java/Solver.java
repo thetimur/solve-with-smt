@@ -12,36 +12,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class Solver {
-    public String solve() throws InvalidConfigurationException, InterruptedException {
-
-        Configuration config = Configuration.defaultConfiguration();
-        LogManager logger = BasicLogManager.create(config);
-        ShutdownNotifier notifier = ShutdownNotifier.createDummy();
-
-
-        try (SolverContext context = SolverContextFactory.createSolverContext(
-                config, logger, notifier, SolverContextFactory.Solvers.SMTINTERPOL)) {
-            IntegerFormulaManager imgr = context.getFormulaManager().getIntegerFormulaManager();
-
-            // Create formula "a = b" with two integer variables
-            NumeralFormula.IntegerFormula a = imgr.makeVariable("a");
-            NumeralFormula.IntegerFormula b = imgr.makeVariable("b");
-            BooleanFormula f = imgr.equal(a, b);
-
-            // Solve formula, get model, and print variable assignment
-            try (ProverEnvironment prover = context.newProverEnvironment(SolverContext.ProverOptions.GENERATE_MODELS)) {
-                prover.addConstraint(f);
-                if (prover.isUnsat()) {
-                    return "Formula not satisfiable";
-                }
-                try (Model model = prover.getModel()) {
-                    return String.format("SAT with a = %s, b = %s", model.evaluate(a), model.evaluate(b));
-                }
-            } catch (SolverException e) {
-                return "Solver error: " + e.getMessage();
-            }
-        }
-    }
 
     private String getNameByIndex(int i, int j) {
         return String.format("cell_%d_%d", i, j);
@@ -55,7 +25,7 @@ public class Solver {
             ShutdownNotifier notifier = ShutdownNotifier.createDummy();
 
             SolverContext context = SolverContextFactory.createSolverContext(
-                    config, logger, notifier, SolverContextFactory.Solvers.SMTINTERPOL);
+                    config, logger, notifier, SolverContextFactory.Solvers.PRINCESS);
 
             FormulaManager fmgr = context.getFormulaManager();
 

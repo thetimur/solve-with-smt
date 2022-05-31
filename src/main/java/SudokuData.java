@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class SudokuData {
     private int[][] field = new int[HEIGHT][WIDTH];
     private static final int HEIGHT = 9;
