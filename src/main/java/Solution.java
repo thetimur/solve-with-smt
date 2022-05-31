@@ -21,6 +21,7 @@ public class Solution {
         public MenuPanel(SudokuData sudoku) {
             setBorder(new EmptyBorder(4, 4, 4, 4));
             setLayout(new GridBagLayout());
+            setBackground(Color.cyan);
             GridBagConstraints gbc = new GridBagConstraints();
             gbc.gridx = 0;
             gbc.gridy = 1;
@@ -80,6 +81,8 @@ public class Solution {
                     g.drawLine(0, 100, 100, 0);
                 }
             };
+
+            bord.setBackground(Color.cyan);
 
             JTextField[][] fields = new JTextField[sudoku.getHeight()][sudoku.getWidth()];
 
