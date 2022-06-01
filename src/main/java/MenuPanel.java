@@ -40,10 +40,8 @@ class MenuPanel extends JPanel {
         solveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Solver solver = new Solver();
-
                 try {
-                    solver.solveSudoku(sudoku);
+                    Solver.solveSudoku(sudoku);
                     if (!sudoku.isSat()) {
                         out.setText("Unsat!");
                     } else {
@@ -64,52 +62,53 @@ class MenuPanel extends JPanel {
         JButton loadButton = new JButton("Load from file");
 
         loadButton.addActionListener(new ActionListener() {
-                    private Component frame;
 
-                    @Override
-                    public void actionPerformed(ActionEvent enterPress) {
-                        JFileChooser chooser = new JFileChooser();
-                        File F;
-                        chooser.setCurrentDirectory(new java.io.File("sudoku"));
-                        chooser.setSelectedFile(new File(""));
-                        chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-                        if (chooser.showOpenDialog(frame) == JFileChooser.OPEN_DIALOG) {
-                            F = chooser.getSelectedFile();
-                            if (F.isFile() && getFileExtension(F).equals("sudoku")) {
-                                try {
-                                    BufferedReader reader = new BufferedReader(new FileReader(F));
+            private Component frame;
 
-                                    JTextField[][] fields = new JTextField[sudoku.getHeight()][sudoku.getWidth()];
-                                    board.getBoard().removeAll();
+            @Override
+            public void actionPerformed(ActionEvent enterPress) {
+                JFileChooser chooser = new JFileChooser();
+                File F;
+                chooser.setCurrentDirectory(new java.io.File("sudoku"));
+                chooser.setSelectedFile(new File(""));
+                chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+                if (chooser.showOpenDialog(frame) == JFileChooser.OPEN_DIALOG) {
+                    F = chooser.getSelectedFile();
+                    if (F.isFile() && getFileExtension(F).equals("sudoku")) {
+                        try {
+                            BufferedReader reader = new BufferedReader(new FileReader(F));
 
-                                    for (int i = 0; i < sudoku.getHeight(); i++) {
-                                        String line = reader.readLine();
+                            JTextField[][] fields = new JTextField[sudoku.getHeight()][sudoku.getWidth()];
+                            board.getBoard().removeAll();
 
-                                        for (int j = 0; j < sudoku.getWidth(); j++) {
-                                            if (line.charAt(j) == '.') {
-                                                sudoku.setValue(i, j, 0);
-                                                fields[i][j] = new JTextField( Integer.toString(0), 2);
-                                            } else {
-                                                sudoku.setValue(i, j, line.charAt(j));
-                                                fields[i][j] = new JTextField( Integer.toString(line.charAt(j)), 2);
-                                            }
-                                            board.getBoard().add(fields[i][j]);
-                                        }
+                            for (int i = 0; i < sudoku.getHeight(); i++) {
+                                String line = reader.readLine();
+
+                                for (int j = 0; j < sudoku.getWidth(); j++) {
+                                    if (line.charAt(j) == '.') {
+                                        sudoku.setValue(i, j, 0);
+                                        fields[i][j] = new JTextField( Integer.toString(0), 2);
+                                    } else {
+                                        sudoku.setValue(i, j, line.charAt(j));
+                                        fields[i][j] = new JTextField( Integer.toString(line.charAt(j)), 2);
                                     }
-
-                                    reader.close();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                    out.setText("Unpredicted file error!");
+                                    board.getBoard().add(fields[i][j]);
                                 }
-                            } else {
-                                out.setText("Incorrect file format!");
                             }
-                        } else {
+
+                            reader.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
                             out.setText("Unpredicted file error!");
                         }
+                    } else {
+                        out.setText("Incorrect file format!");
                     }
-                });
+                } else {
+                    out.setText("Unpredicted file error!");
+                }
+            }
+        });
 
         add(loadButton, gbc);
         gbc.gridy++;
@@ -118,40 +117,35 @@ class MenuPanel extends JPanel {
     private void makeSaveButton() {
         JButton saveButton = new JButton("Save assignment");
 
-        saveButton.addActionListener(new ActionListener() {
-                    private Component frame;
+        saveButton.addActionListener(enterPress -> {
+                    File filePath = new File("sudoku");
+                    try {
+                        FileWriter writer = new FileWriter(filePath + "\\tmp.sudoku", false);
 
-                    @Override
-                    public void actionPerformed(ActionEvent enterPress) {
-                        File filePath = new File("sudoku");
-                        try {
-                            FileWriter writer = new FileWriter(filePath + "\\tmp.sudoku", false);
+                        for (int i = 0; i < sudoku.getHeight(); i++) {
+                            StringBuilder line = new StringBuilder();
 
-                            for (int i = 0; i < sudoku.getHeight(); i++) {
-                                StringBuilder line = new StringBuilder();
+                            for (int j = 0; j < sudoku.getWidth(); j++) {
+                                int value = sudoku.getValue(i, j);
 
-                                for (int j = 0; j < sudoku.getWidth(); j++) {
-                                    int value = sudoku.getValue(i, j);
-
-                                    if (value == 0) {
-                                        line.append(".");
-                                    } else {
-                                        line.append(value);
-                                    }
+                                if (value == 0) {
+                                    line.append(".");
+                                } else {
+                                    line.append(value);
                                 }
-
-                                line.append("\n");
-                                writer.append(line.toString());
                             }
 
-                            setOut("Save success!");
-                            writer.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            out.setText("Unpredicted file error!");
+                            line.append("\n");
+                            writer.append(line.toString());
                         }
+
+                        setOut("Save success!");
+                        writer.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        out.setText("Unpredicted file error!");
                     }
-        });
+                });
 
 
         add(saveButton, gbc);
