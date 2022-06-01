@@ -1,18 +1,11 @@
-import org.sosy_lab.common.configuration.InvalidConfigurationException;
-
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import javax.swing.border.Border;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 public class Solution {
-    SudokuBord bord;
+    SudokuBord board;
 
     public static class MenuPanel extends JPanel {
 
@@ -115,21 +108,23 @@ public class Solution {
             Solver solver = new Solver();
             SudokuData sudoku = new SudokuData();
             sudoku.setValue(0, 0, 1);
-            solver.solveSudoku(sudoku);
+            sudoku.setValue(1, 0, 1);
 
-            String result = "Sat!";
 
+            //String result = "Sat!";
+/*
             if (!sudoku.isSat()) {
                 System.out.println("Unsat");
                 result = "Unsat!";
             }
+*/
 
-            bord = new SudokuBord(sudoku);
+            board = new SudokuBord(sudoku);
 
-            frame.add(bord.getBord());
+            frame.add(board.getBord());
 
             MenuPanel menu = new MenuPanel(sudoku);
-            menu.setOut(result);
+            //menu.setOut(result);
 
             frame.add(menu, BorderLayout.AFTER_LINE_ENDS);
 
