@@ -23,21 +23,26 @@ public class Solution {
 
             JButton solveButton = new JButton("Solve");
 
-            solveButton.addActionListener(e -> {
-                // Отладочный код!
-                System.out.println(sudoku.getValue(0, 0));
-                // Отладочный код!
+            solveButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // Отладочный код!
+                    System.out.println(sudoku.getValue(0, 0));
+                    // Отладочный код!
 
-                try {
-                    Solver.solveSudoku(sudoku);
-                    if (!sudoku.isSat()) {
-                        out.setText("Unsat!");
-                    } else {
-                        out.setText("Sat!");
+                    Solver solver = new Solver();
+
+                    try {
+                        solver.solveSudoku(sudoku);
+                        if (!sudoku.isSat()) {
+                            out.setText("Unsat!");
+                        } else {
+                            out.setText("Sat!");
+                        }
+                    } catch (Exception exception) {
+                        out.setText("Error while solving!");
+                        exception.printStackTrace();
                     }
-                } catch (Exception exception) {
-                    out.setText("Error while solving!");
-                    exception.printStackTrace();
                 }
             });
 
@@ -103,6 +108,7 @@ public class Solution {
             Solver solver = new Solver();
             SudokuData sudoku = new SudokuData();
             sudoku.setValue(0, 0, 1);
+            sudoku.setValue(1, 0, 1);
 
 
             //String result = "Sat!";
@@ -134,30 +140,8 @@ public class Solution {
     }
 
     public static void main(String[] args) {
-        Solution solution = new Solution();
+        App app = new App();
 
-        /*Solver solver = new Solver();
-        SudokuData sudoku = new SudokuData();
-
-        try {
-            SudokuData array = new SudokuData();
-
-            solver.solveSudoku(array);
-
-            array.setValue(0, 0, 1);
-            array.setValue(0, 1, 1);
-            for (int i = 0; i < array.getHeight(); i++) {
-                for (int j = 0; j < array.getWidth(); j++) {
-                    System.out.print(array.getValue(i, j));
-                }
-                System.out.println("");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-*/
-//        String filename = "C:\\Users\\MSI GL75\\IdeaProjects\\solve-with-smt\\resources\\OK.jpg";
-
-        solution.draw();
+        app.launch();
     }
 }
