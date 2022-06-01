@@ -94,6 +94,7 @@ public class Solver {
                     return current;
                 }
                 Model model = prover.getModel();
+                current.setSat(true);
                 for (int i = 0; i < current.getHeight(); i++) {
                     for (int j = 0; j < current.getWidth(); j++) {
                         current.setValue(i, j, Objects.requireNonNull(model.evaluate(vars[i][j])).intValue());

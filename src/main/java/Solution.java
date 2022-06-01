@@ -115,7 +115,6 @@ public class Solution {
             Solver solver = new Solver();
             SudokuData sudoku = new SudokuData();
             sudoku.setValue(0, 0, 1);
-            sudoku.setValue(0, 1, 1);
             solver.solveSudoku(sudoku);
 
             String result = "Sat!";
