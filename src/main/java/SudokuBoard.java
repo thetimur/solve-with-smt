@@ -14,14 +14,15 @@ class SudokuBoard {
     static class Cell extends JPanel {
         private final JTextField assigment;
 
-        Cell(int value, Weight weight) {
+        Cell(int value, ConstraintCell cell, ScopeConstraint constraint) {
             setLayout(new GridLayout(1, 1, 2, 2));
             assigment = new JTextField(Integer.toString(value));
             add(assigment);
-            if (weight.isWeighted) {
-                int colorNum = weight.weight * weight.groupNum * 500;
+            if (constraint != null && constraint.containsCell(cell.getX(), cell.getY())) {
+                int colorNum = constraint.getWeight() * ScopeConstraint.getId() * 500;
                 Color color = Color.getHSBColor(colorNum % (255*255*255), colorNum % (255*255), colorNum % 255);
                 setBackground(color);
+                assigment.setBackground(color);
             } else {
                 setBackground(Color.cyan);
             }
@@ -56,7 +57,7 @@ class SudokuBoard {
 
         for (int i = 0; i < sudoku.getHeight(); i++) {
             for (int j = 0; j < sudoku.getWidth(); j++) {
-                fields[i][j] = new Cell(sudoku.getValue(i, j), sudoku.getWeight(i, j));
+                fields[i][j] = new Cell(sudoku.getValue(i, j), new ConstraintCell(i, j), sudoku.getConstraint(i, j));
 
                 int finalJ = j;
                 int finalI = i;

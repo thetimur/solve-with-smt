@@ -1,13 +1,5 @@
-import de.uni_freiburg.informatik.ultimate.smtinterpol.theory.epr.util.Pair;
-
 import java.util.ArrayList;
 import java.util.List;
-
-class Weight {
-    public int weight;
-    public int groupNum;
-    public boolean isWeighted = false;
-}
 
 public class SudokuData {
     private final int[][] field = new int[HEIGHT][WIDTH];
@@ -15,14 +7,13 @@ public class SudokuData {
     private static final int WIDTH = 9;
     private static final int BLOCK = 3;
     private boolean sat;
-    Weight[][] weights = new Weight[HEIGHT][WIDTH];
+    private List<ScopeConstraint> consraints = new ArrayList<>();
 
     public SudokuData() {
 
         for (int i = 0; i < HEIGHT; i++) {
             for (int j = 0; j < WIDTH; j++) {
                 field[i][j] = 0;
-                weights[i][j] = new Weight();
             }
         }
     }
@@ -55,12 +46,16 @@ public class SudokuData {
         return BLOCK;
     }
 
-    public Weight getWeight(int x, int y) {
-        return weights[x][y];
+    public void addConstraint(ScopeConstraint constraint) {
+        consraints.add(constraint);
     }
 
-    public void setWeight(int x, int y, Weight in_weight) {
-        weights[x][y] = in_weight;
+    public ScopeConstraint getConstraint(int i, int j) {
+        for (ScopeConstraint sc : consraints) {
+            if (sc.containsCell(i, j)) {
+                return sc;
+            }
+        }
+        return null;
     }
-
 }
