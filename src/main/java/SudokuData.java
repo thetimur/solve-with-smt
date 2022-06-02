@@ -60,7 +60,7 @@ public class SudokuData {
         return null;
     }
 
-    public List<ScopeConstraint> getConsraints() {
+    public List<ScopeConstraint> getScopeConstraints() {
         return scopeConstraints;
     }
 
