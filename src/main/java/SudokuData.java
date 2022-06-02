@@ -51,7 +51,7 @@ public class SudokuData {
         scopeConstraints.add(constraint);
     }
 
-    public ScopeConstraint getScopeConstraint(int i, int j) {
+    public ScopeConstraint getConstraint(int i, int j) {
         for (ScopeConstraint sc : scopeConstraints) {
             if (sc.containsCell(i, j)) {
                 return sc;

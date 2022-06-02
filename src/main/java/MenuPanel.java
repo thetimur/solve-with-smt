@@ -4,6 +4,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 class MenuPanel extends JPanel {
 
@@ -74,14 +78,36 @@ class MenuPanel extends JPanel {
                         try {
                             BufferedReader reader = new BufferedReader(new FileReader(F));
 
+                            List<String> lines = reader.lines().collect(Collectors.toList());
+
                             for (int i = 0; i < sudoku.getHeight(); i++) {
-                                String line = reader.readLine();
+                                String line = lines.get(i);
 
                                 for (int j = 0; j < sudoku.getWidth(); j++) {
                                     if (line.charAt(j) == '.') {
                                         sudoku.setValue(i, j, 0);
                                     } else {
                                         sudoku.setValue(i, j, line.charAt(j) - 48);
+                                    }
+                                }
+                            }
+
+                            if (lines.size() != sudoku.getHeight()) {
+                                for (int i = sudoku.getHeight(); i < lines.size(); i++) {
+                                    List<String> subLimes = Arrays.asList(lines.get(i).split(" "));
+
+                                    if (subLimes.get(0).equals("+")) {
+                                        int weight = Integer.parseInt(subLimes.get(1));
+                                        List<ConstraintCell> cells = new ArrayList<>();
+
+                                        for (int j = 2; j < subLimes.size(); j+=2) {
+                                            cells.add(new ConstraintCell(
+                                                    Integer.parseInt(subLimes.get(j)),
+                                                    Integer.parseInt(subLimes.get(j + 1))
+                                            ));
+                                        }
+
+                                        sudoku.addConstraint(new ScopeConstraint(weight, cells));
                                     }
                                 }
                             }
@@ -143,6 +169,25 @@ class MenuPanel extends JPanel {
                                 } else {
                                     line.append(value);
                                 }
+                            }
+
+                            line.append("\n");
+                            writer.append(line.toString());
+                        }
+
+                        List<ScopeConstraint> constraints = sudoku.getConsraints();
+
+                        for (ScopeConstraint constraint : constraints) {
+                            StringBuilder line = new StringBuilder();
+
+                            line.append("+ ");
+                            line.append(constraint.getWeight());
+
+                            for (ConstraintCell s : constraint.getCells()) {
+                                line.append(" ");
+                                line.append(s.getX());
+                                line.append(" ");
+                                line.append(s.getY());
                             }
 
                             line.append("\n");

@@ -5,8 +5,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-
-
 class SudokuBoard {
     private final JPanel board;
     Cell[][] fields;
