@@ -1,11 +1,36 @@
+import ap.terfor.TermOrder;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+
+
 class SudokuBoard {
     private final JPanel board;
-    JTextField[][] fields;
+    Cell[][] fields;
+
+    static class Cell extends JPanel {
+        private final JTextField assigment;
+
+        Cell(int value, Weight weight) {
+            setLayout(new GridLayout(1, 1, 2, 2));
+            assigment = new JTextField(Integer.toString(value));
+            add(assigment);
+            if (weight.isWeighted) {
+                int colorNum = weight.weight * weight.groupNum * 500;
+                Color color = Color.getHSBColor(colorNum % (255*255*255), colorNum % (255*255), colorNum % 255);
+                setBackground(color);
+            } else {
+                setBackground(Color.cyan);
+            }
+        }
+
+        public JTextField getField() {
+            return assigment;
+        }
+    }
 
     SudokuBoard(SudokuData sudoku) {
         board = new JPanel(new GridLayout(sudoku.getWidth(), sudoku.getHeight())) {
@@ -27,18 +52,18 @@ class SudokuBoard {
     }
 
     public void fillBoard(SudokuData sudoku) {
-        fields = new JTextField[sudoku.getHeight()][sudoku.getWidth()];
+        fields = new Cell[sudoku.getHeight()][sudoku.getWidth()];
 
         for (int i = 0; i < sudoku.getHeight(); i++) {
             for (int j = 0; j < sudoku.getWidth(); j++) {
-                fields[i][j] = new JTextField( Integer.toString(sudoku.getValue(i, j)), 2);
+                fields[i][j] = new Cell(sudoku.getValue(i, j), sudoku.getWeight(i, j));
 
                 int finalJ = j;
                 int finalI = i;
-                fields[i][j].addActionListener(new ActionListener() {
+                fields[i][j].getField().addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        sudoku.setValue(finalI, finalJ, Integer.parseInt(fields[finalI][finalJ].getText()));
+                        sudoku.setValue(finalI, finalJ, Integer.parseInt(fields[finalI][finalJ].getField().getText()));
                     }
                 });
                 board.add(fields[i][j]);
@@ -46,5 +71,5 @@ class SudokuBoard {
         }
     }
 
-    public JTextField[][] getBoardInfo() { return fields; }
+    public Cell[][] getBoardInfo() { return fields; }
 }
