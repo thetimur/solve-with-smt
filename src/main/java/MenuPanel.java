@@ -24,17 +24,10 @@ class MenuPanel extends JPanel {
         gbc.weightx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        makeSolveButton();
-        makeLoadButton();
-
-        add(new JButton("Reset"), gbc);
-        gbc.gridy++;
-        makeSaveButton();
-
         add(out);
     }
 
-    private void makeSolveButton() {
+    public void makeSolveButton(JFrame frame) {
         JButton solveButton = new JButton("Solve");
 
         solveButton.addActionListener(new ActionListener() {
@@ -47,6 +40,8 @@ class MenuPanel extends JPanel {
                     } else {
                         out.setText("Sat!");
                     }
+
+                    updateRelatedBoard(frame);
                 } catch (Exception exception) {
                     out.setText("Error while solving!");
                     exception.printStackTrace();
@@ -58,7 +53,7 @@ class MenuPanel extends JPanel {
         gbc.gridy++;
     }
 
-    private void makeLoadButton() {
+    public void makeLoadButton(JFrame in_frame) {
         JButton loadButton = new JButton("Load from file");
 
         loadButton.addActionListener(new ActionListener() {
@@ -78,24 +73,19 @@ class MenuPanel extends JPanel {
                         try {
                             BufferedReader reader = new BufferedReader(new FileReader(F));
 
-                            JTextField[][] fields = new JTextField[sudoku.getHeight()][sudoku.getWidth()];
-                            board.getBoard().removeAll();
-
                             for (int i = 0; i < sudoku.getHeight(); i++) {
                                 String line = reader.readLine();
 
                                 for (int j = 0; j < sudoku.getWidth(); j++) {
                                     if (line.charAt(j) == '.') {
                                         sudoku.setValue(i, j, 0);
-                                        fields[i][j] = new JTextField( Integer.toString(0), 2);
                                     } else {
-                                        sudoku.setValue(i, j, line.charAt(j));
-                                        fields[i][j] = new JTextField( Integer.toString(line.charAt(j)), 2);
+                                        sudoku.setValue(i, j, line.charAt(j) - 48);
                                     }
-                                    board.getBoard().add(fields[i][j]);
                                 }
                             }
 
+                            updateRelatedBoard(in_frame);
                             reader.close();
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -114,7 +104,26 @@ class MenuPanel extends JPanel {
         gbc.gridy++;
     }
 
-    private void makeSaveButton() {
+    public void makeResetButton(JFrame in_frame) {
+        JButton resetButton = new JButton("Reset");
+
+        resetButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                for (int i = 0; i < sudoku.getHeight(); i++) {
+                    for (int j = 0; j < sudoku.getWidth(); j++) {
+                        sudoku.setValue(i, j, 0);
+                    }
+                }
+                updateRelatedBoard(in_frame);
+            }
+        });
+
+        add(resetButton, gbc);
+        gbc.gridy++;
+    }
+
+    public void makeSaveButton() {
         JButton saveButton = new JButton("Save assignment");
 
         saveButton.addActionListener(enterPress -> {
@@ -159,6 +168,31 @@ class MenuPanel extends JPanel {
             return filename.substring(filename.lastIndexOf(".") + 1);
         }
         return "";
+    }
+
+    private void removeFrame(JFrame frame) {
+        frame.getContentPane().remove(board.getBoard());
+        board.getBoard().removeAll();
+    }
+
+    private void updateFrame(JFrame frame) {
+        frame.getContentPane().add(board.getBoard());
+        frame.validate();
+    }
+
+    private void updateRelatedBoard(JFrame frame) {
+        JTextField[][] fields = new JTextField[sudoku.getHeight()][sudoku.getWidth()];
+        removeFrame(frame);
+
+        for (int i = 0; i < sudoku.getHeight(); i++) {
+
+            for (int j = 0; j < sudoku.getWidth(); j++) {
+                fields[i][j] = new JTextField( Integer.toString(sudoku.getValue(i, j)), 2);
+                board.getBoard().add(fields[i][j]);
+            }
+        }
+
+        updateFrame(frame);
     }
 
     public void setOut(String text) {

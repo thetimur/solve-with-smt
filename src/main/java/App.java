@@ -17,7 +17,10 @@ class App {
             frame.add(board.getBoard());
 
             MenuPanel menu = new MenuPanel(sudoku, board);
-            //menu.setOut(result);
+            menu.makeSolveButton(frame);
+            menu.makeLoadButton(frame);
+            menu.makeResetButton(frame);
+            menu.makeSaveButton();
 
             frame.add(menu, BorderLayout.AFTER_LINE_ENDS);
 
