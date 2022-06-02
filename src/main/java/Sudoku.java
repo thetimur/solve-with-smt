@@ -78,7 +78,7 @@ public class Sudoku {
                         grid[i][j] = sudoku.getValue(i, j);
                     }
                 }
-                Integer[][] solution = sudokuSolver.solve(grid);
+                Integer[][] solution = sudokuSolver.solve(grid, sudoku.getScopeConstraints(), sudoku.getLessConstraints());
 
                 if (solution == UNSOLVABLE_SUDOKU) {
                     sudoku.setSat(false);
@@ -122,7 +122,7 @@ public class Sudoku {
 
         abstract S getSymbols();
 
-        abstract List<BooleanFormula> getRules(S symbols);
+        abstract List<BooleanFormula> getRules(S symbols, List<ScopeConstraint> scopeConstraints, List<LessConstraint> lessConstraints);
 
         abstract List<BooleanFormula> getAssignments(S symbols, Integer[][] grid);
 
@@ -134,9 +134,9 @@ public class Sudoku {
          * </code> if Sudoku cannot be solved.
          */
         @Nullable
-        public Integer[][] solve(Integer[][] grid) throws InterruptedException, SolverException {
+        public Integer[][] solve(Integer[][] grid, List<ScopeConstraint> scopeConstraints, List<LessConstraint> lessConstraints) throws InterruptedException, SolverException {
             S symbols = getSymbols();
-            List<BooleanFormula> rules = getRules(symbols);
+            List<BooleanFormula> rules = getRules(symbols, scopeConstraints, lessConstraints);
             List<BooleanFormula> assignments = getAssignments(symbols, grid);
 
             // solve Sudoku
@@ -187,7 +187,7 @@ public class Sudoku {
          * <li>each column, each row, and each 3x3 block contains 9 distinct integer values.
          */
         @Override
-        List<BooleanFormula> getRules(IntegerFormula[][] symbols) {
+        List<BooleanFormula> getRules(IntegerFormula[][] symbols, List<ScopeConstraint> scopeConstraints, List<LessConstraint> lessConstraints) {
             final List<BooleanFormula> rules = new ArrayList<>();
 
             // each symbol has a value from 1 to 9
@@ -226,6 +226,20 @@ public class Sudoku {
                     }
                     rules.add(imgr.distinct(lst));
                 }
+            }
+
+            // Less constraints
+            for (LessConstraint lc : lessConstraints) {
+                rules.add(imgr.lessThan(symbols[lc.getLeft().getX()][lc.getLeft().getY()], symbols[lc.getRight().getX()][lc.getLeft().getY()]));
+            }
+
+            // Scope constraints
+            for (ScopeConstraint sc : scopeConstraints) {
+                List<IntegerFormula> cl = new ArrayList<>();
+                for (ConstraintCell c : sc.getCells()) {
+                    cl.add(symbols[c.getX()][c.getY()]);
+                }
+                rules.add(imgr.equal(imgr.sum(cl), imgr.makeNumber(sc.getWeight())));
             }
 
             return rules;
