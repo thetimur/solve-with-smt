@@ -92,23 +92,33 @@ class MenuPanel extends JPanel {
                                 }
                             }
 
-                            if (lines.size() != sudoku.getHeight()) {
-                                for (int i = sudoku.getHeight(); i < lines.size(); i++) {
-                                    List<String> subLimes = Arrays.asList(lines.get(i).split(" "));
+                            for (int i = sudoku.getHeight(); i < lines.size(); i++) {
+                                List<String> subLimes = Arrays.asList(lines.get(i).split(" "));
 
-                                    if (subLimes.get(0).equals("+")) {
-                                        int weight = Integer.parseInt(subLimes.get(1));
-                                        List<ConstraintCell> cells = new ArrayList<>();
+                                if (subLimes.get(0).equals("+")) {
+                                    int weight = Integer.parseInt(subLimes.get(1));
+                                    List<ConstraintCell> cells = new ArrayList<>();
 
-                                        for (int j = 2; j < subLimes.size(); j+=2) {
-                                            cells.add(new ConstraintCell(
-                                                    Integer.parseInt(subLimes.get(j)),
-                                                    Integer.parseInt(subLimes.get(j + 1))
-                                            ));
-                                        }
-
-                                        sudoku.addConstraint(new ScopeConstraint(weight, cells));
+                                    for (int j = 2; j < subLimes.size(); j += 2) {
+                                        cells.add(new ConstraintCell(
+                                                Integer.parseInt(subLimes.get(j)),
+                                                Integer.parseInt(subLimes.get(j + 1))
+                                        ));
                                     }
+
+                                    sudoku.addScopeConstraint(new ScopeConstraint(weight, cells));
+                                } else if (subLimes.get(0).equals("<")) {
+                                    sudoku.addLessConstraint(new LessConstraint(
+                                            new ConstraintCell(
+                                                    Integer.parseInt(subLimes.get(1)),
+                                                    Integer.parseInt(subLimes.get(2))),
+                                            new ConstraintCell(
+                                                    Integer.parseInt(subLimes.get(3)),
+                                                    Integer.parseInt(subLimes.get(4))
+
+                                    )));
+                                } else {
+                                    throw new Exception("Unpredicted file Error");
                                 }
                             }
 
@@ -117,6 +127,8 @@ class MenuPanel extends JPanel {
                         } catch (IOException e) {
                             e.printStackTrace();
                             out.setText("Unpredicted file error!");
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     } else {
                         out.setText("Incorrect file format!");
@@ -175,9 +187,9 @@ class MenuPanel extends JPanel {
                             writer.append(line.toString());
                         }
 
-                        List<ScopeConstraint> constraints = sudoku.getScopeConstraints();
+                        List<ScopeConstraint> scopeConstraints = sudoku.getScopeConstraints();
 
-                        for (ScopeConstraint constraint : constraints) {
+                        for (ScopeConstraint constraint : scopeConstraints) {
                             StringBuilder line = new StringBuilder();
 
                             line.append("+ ");
@@ -192,6 +204,17 @@ class MenuPanel extends JPanel {
 
                             line.append("\n");
                             writer.append(line.toString());
+                        }
+
+                        List<LessConstraint> lessConstraints = sudoku.getLessConstraints();
+
+                        for (LessConstraint constraint : lessConstraints) {
+
+                            String line = "< " +
+                                    constraint.left.getX() + " " + constraint.left.getY() + " " +
+                                    constraint.right.getX() + " " + constraint.right.getY() +
+                                    "\n";
+                            writer.append(line);
                         }
 
                         setOut("Save success!");

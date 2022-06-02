@@ -51,7 +51,7 @@ public class SudokuData {
         scopeConstraints.add(constraint);
     }
 
-    public void AddLessConstraint(LessConstraint constraint) {
+    public void addLessConstraint(LessConstraint constraint) {
         lessConstraints.add(constraint);
     }
 
