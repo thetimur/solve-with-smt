@@ -7,7 +7,8 @@ public class SudokuData {
     private static final int WIDTH = 9;
     private static final int BLOCK = 3;
     private boolean sat;
-    private List<ScopeConstraint> consraints = new ArrayList<>();
+    private List<ScopeConstraint> scopeConstraints = new ArrayList<>();
+    private List<LessConstraint> lessConstraints = new ArrayList<>();
 
     public SudokuData() {
 
@@ -47,15 +48,23 @@ public class SudokuData {
     }
 
     public void addConstraint(ScopeConstraint constraint) {
-        consraints.add(constraint);
+        scopeConstraints.add(constraint);
     }
 
-    public ScopeConstraint getConstraint(int i, int j) {
-        for (ScopeConstraint sc : consraints) {
+    public ScopeConstraint getScopeConstraint(int i, int j) {
+        for (ScopeConstraint sc : scopeConstraints) {
             if (sc.containsCell(i, j)) {
                 return sc;
             }
         }
         return null;
+    }
+
+    public List<ScopeConstraint> getConsraints() {
+        return scopeConstraints;
+    }
+
+    public List<LessConstraint> getLessConstraints() {
+        return lessConstraints;
     }
 }
