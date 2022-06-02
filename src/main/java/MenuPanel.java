@@ -175,7 +175,7 @@ class MenuPanel extends JPanel {
                             writer.append(line.toString());
                         }
 
-                        List<ScopeConstraint> constraints = sudoku.getConsraints();
+                        List<ScopeConstraint> constraints = sudoku.getScopeConstraints();
 
                         for (ScopeConstraint constraint : constraints) {
                             StringBuilder line = new StringBuilder();
