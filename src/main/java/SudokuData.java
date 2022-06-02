@@ -47,8 +47,12 @@ public class SudokuData {
         return BLOCK;
     }
 
-    public void addConstraint(ScopeConstraint constraint) {
+    public void addScopeConstraint(ScopeConstraint constraint) {
         scopeConstraints.add(constraint);
+    }
+
+    public void AddLessConstraint(LessConstraint constraint) {
+        lessConstraints.add(constraint);
     }
 
     public ScopeConstraint getConstraint(int i, int j) {
