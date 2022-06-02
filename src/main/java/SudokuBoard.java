@@ -19,7 +19,14 @@ class SudokuBoard {
         };
 
         board.setBackground(Color.cyan);
+        fillBoard(sudoku);
+    }
 
+    public JPanel getBoard() {
+        return board;
+    }
+
+    public void fillBoard(SudokuData sudoku) {
         fields = new JTextField[sudoku.getHeight()][sudoku.getWidth()];
 
         for (int i = 0; i < sudoku.getHeight(); i++) {
@@ -37,10 +44,6 @@ class SudokuBoard {
                 board.add(fields[i][j]);
             }
         }
-    }
-
-    public JPanel getBoard() {
-        return board;
     }
 
     public JTextField[][] getBoardInfo() { return fields; }

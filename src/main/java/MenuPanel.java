@@ -35,6 +35,7 @@ class MenuPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 try {
                     Solver.solveSudoku(sudoku);
+
                     if (!sudoku.isSat()) {
                         out.setText("Unsat!");
                     } else {
@@ -181,16 +182,9 @@ class MenuPanel extends JPanel {
     }
 
     private void updateRelatedBoard(JFrame frame) {
-        JTextField[][] fields = new JTextField[sudoku.getHeight()][sudoku.getWidth()];
         removeFrame(frame);
 
-        for (int i = 0; i < sudoku.getHeight(); i++) {
-
-            for (int j = 0; j < sudoku.getWidth(); j++) {
-                fields[i][j] = new JTextField( Integer.toString(sudoku.getValue(i, j)), 2);
-                board.getBoard().add(fields[i][j]);
-            }
-        }
+        board.fillBoard(sudoku);
 
         updateFrame(frame);
     }
