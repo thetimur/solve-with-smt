@@ -151,7 +151,11 @@ class MenuPanel extends JPanel {
             ));
         }
 
-        sudoku.addScopeConstraint(new ScopeConstraint(weight, cells));
+        try {
+            sudoku.addScopeConstraint(new ScopeConstraint(weight, cells));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void makeResetButton(JFrame in_frame) {

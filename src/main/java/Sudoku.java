@@ -230,7 +230,7 @@ public class Sudoku {
 
             // Less constraints
             for (LessConstraint lc : lessConstraints) {
-                rules.add(imgr.lessThan(symbols[lc.getLeft().getX()][lc.getLeft().getY()], symbols[lc.getRight().getX()][lc.getLeft().getY()]));
+                rules.add(imgr.lessThan(symbols[lc.getLeft().getX()][lc.getLeft().getY()], symbols[lc.getRight().getX()][lc.getRight().getY()]));
             }
 
             // Scope constraints
