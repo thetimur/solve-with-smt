@@ -16,7 +16,7 @@ class MenuPanel extends JPanel {
     private final SudokuData sudoku;
     private final SudokuData savedSudoku;
     private final SudokuBoard board;
-    private JTextArea information = new JTextArea();
+    private final JTextArea information = new JTextArea();
 
     public MenuPanel(SudokuData in_sudoku, SudokuBoard in_board) {
         sudoku = in_sudoku;
@@ -382,13 +382,6 @@ class MenuPanel extends JPanel {
     }
 
     public void makeInformationPanel() {
-       String text = "Less constraints:";
-
-       StringBuilder info = new StringBuilder();
-       info.append(text);
-
-       updateInformation(info);
-
-       add(information, gbc);
+        add(board.getLocal_info(), gbc);
     }
 }
