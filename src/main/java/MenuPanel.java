@@ -7,11 +7,10 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 class MenuPanel extends JPanel {
 
-    private final JTextField out = new JTextField("Here will appear your results");;
+    private final JTextField out = new JTextField("Here will appear your results");
     private final GridBagConstraints gbc = new GridBagConstraints();
     private final SudokuData sudoku;
     private final SudokuData savedSudoku;
@@ -38,25 +37,22 @@ class MenuPanel extends JPanel {
     public void makeSolveButton(JFrame frame) {
         JButton solveButton = new JButton("Solve");
 
-        solveButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                copySudoku(savedSudoku, sudoku);
+        solveButton.addActionListener(e -> {
+            copySudoku(savedSudoku, sudoku);
 
-                try {
-                    Solver.solveSudoku(sudoku);
+            try {
+                Solver.solveSudoku(sudoku);
 
-                    if (!sudoku.isSat()) {
-                        out.setText("Unsat!");
-                    } else {
-                        out.setText("Sat!");
-                    }
-
-                    updateRelatedBoard(frame);
-                } catch (Exception exception) {
-                    out.setText("Error while solving!");
-                    exception.printStackTrace();
+                if (!sudoku.isSat()) {
+                    out.setText("Unsat!");
+                } else {
+                    out.setText("Sat!");
                 }
+
+                updateRelatedBoard(frame);
+            } catch (Exception exception) {
+                out.setText("Error while solving!");
+                exception.printStackTrace();
             }
         });
 
@@ -86,7 +82,7 @@ class MenuPanel extends JPanel {
                         try {
                             BufferedReader reader = new BufferedReader(new FileReader(F));
 
-                            List<String> lines = reader.lines().collect(Collectors.toList());
+                            List<String> lines = reader.lines().toList();
 
                             for (int i = 0; i < sudoku.getHeight(); i++) {
                                 String line = lines.get(i);
@@ -148,10 +144,9 @@ class MenuPanel extends JPanel {
                 Integer.parseInt(subLimes.get(4));
 
         if (!information.getText().contains(newField)) {
-            StringBuilder info = new StringBuilder();
-            info.append(information.getText());
-            info.append(newField);
-            information.setText(info.toString());
+            String info = information.getText() +
+                    newField;
+            information.setText(info);
         }
     }
 
@@ -176,21 +171,18 @@ class MenuPanel extends JPanel {
     public void makeResetButton(JFrame in_frame) {
         JButton resetButton = new JButton("Reset");
 
-        resetButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                copySudoku(savedSudoku, sudoku);
+        resetButton.addActionListener(e -> {
+            copySudoku(savedSudoku, sudoku);
 
-                sudoku.dropConstraints();
-                for (int i = 0; i < sudoku.getHeight(); i++) {
-                    for (int j = 0; j < sudoku.getWidth(); j++) {
-                        sudoku.setValue(i, j, 0);
-                    }
+            sudoku.dropConstraints();
+            for (int i = 0; i < sudoku.getHeight(); i++) {
+                for (int j = 0; j < sudoku.getWidth(); j++) {
+                    sudoku.setValue(i, j, 0);
                 }
-
-                information.setText("Less constraints:");
-                updateRelatedBoard(in_frame);
             }
+
+            information.setText("Less constraints:");
+            updateRelatedBoard(in_frame);
         });
 
         add(resetButton, gbc);
@@ -268,19 +260,16 @@ class MenuPanel extends JPanel {
     public void makeUndoButton(JFrame in_frame) {
         JButton undoButton = new JButton("Undo");
 
-        undoButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                copySudoku(sudoku, savedSudoku);
+        undoButton.addActionListener(e -> {
+            copySudoku(sudoku, savedSudoku);
 
-                StringBuilder info = new StringBuilder();
+            StringBuilder info = new StringBuilder();
 
-                info.append("Less constraints:");
+            info.append("Less constraints:");
 
-                updateInformation(info);
+            updateInformation(info);
 
-                updateRelatedBoard(in_frame);
-            }
+            updateRelatedBoard(in_frame);
         });
 
         add(undoButton, gbc);
@@ -308,25 +297,22 @@ class MenuPanel extends JPanel {
 
         JTextField console = new JTextField();
 
-        addConstraintButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                copySudoku(savedSudoku, sudoku);
+        addConstraintButton.addActionListener(e -> {
+            copySudoku(savedSudoku, sudoku);
 
-                List<String> input = Arrays.asList(console.getText().split(" "));
+            List<String> input = Arrays.asList(console.getText().split(" "));
 
-                try {
-                    if (input.get(0).equals("+")) {
-                        mAddScopeConstraint(input);
-                    } else if (input.get(0).equals("<")) {
-                        mAddLessConstraint(input);
-                    }
-                } catch(Exception exp) {
-                    out.setText("Incorrect format!");
+            try {
+                if (input.get(0).equals("+")) {
+                    mAddScopeConstraint(input);
+                } else if (input.get(0).equals("<")) {
+                    mAddLessConstraint(input);
                 }
-
-                updateRelatedBoard(in_frame);
+            } catch(Exception exp) {
+                out.setText("Incorrect format!");
             }
+
+            updateRelatedBoard(in_frame);
         });
 
         add(addConstraintButton, gbc);

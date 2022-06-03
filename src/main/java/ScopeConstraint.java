@@ -1,6 +1,7 @@
-import scala.Array;
-
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.List;
 
 public class ScopeConstraint {
     private int weight;
@@ -22,7 +23,6 @@ public class ScopeConstraint {
         Boolean[] vis = new Boolean[81];
         Arrays.fill(vis, Boolean.FALSE);
         q.add(cells.get(0));
-        int visited = 0;
 
         while (!q.isEmpty()) {
             ConstraintCell v = q.pollFirst();

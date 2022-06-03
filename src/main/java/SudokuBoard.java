@@ -128,8 +128,6 @@ class SudokuBoard {
         }
     }
 
-    public Cell[][] getBoardInfo() { return fields; }
-
     public JTextArea getLocal_info() {
         return local_info;
     }
