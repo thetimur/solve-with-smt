@@ -154,7 +154,7 @@ class MenuPanel extends JPanel {
         try {
             sudoku.addScopeConstraint(new ScopeConstraint(weight, cells));
         } catch (Exception e) {
-            e.printStackTrace();
+            out.setText(e.getMessage());
         }
     }
 
