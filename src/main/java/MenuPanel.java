@@ -16,11 +16,13 @@ class MenuPanel extends JPanel {
     private final SudokuData sudoku;
     private final SudokuData savedSudoku;
     private final SudokuBoard board;
+    private JTextArea information = new JTextArea();
 
     public MenuPanel(SudokuData in_sudoku, SudokuBoard in_board) {
         sudoku = in_sudoku;
         savedSudoku = new SudokuData();
         board = in_board;
+        information.setEditable(false);
 
         setBorder(new EmptyBorder(4, 4, 4, 4));
         setLayout(new GridBagLayout());
@@ -29,6 +31,7 @@ class MenuPanel extends JPanel {
         gbc.gridy = 1;
         gbc.weightx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
+        out.setEditable(false);
         add(out);
     }
 
@@ -138,6 +141,18 @@ class MenuPanel extends JPanel {
                         Integer.parseInt(subLimes.get(4))
 
         )));
+
+        String newField = "\n"  + Integer.parseInt(subLimes.get(1)) + " " +
+                Integer.parseInt(subLimes.get(2)) + " < " +
+                Integer.parseInt(subLimes.get(3)) + " " +
+                Integer.parseInt(subLimes.get(4));
+
+        if (!information.getText().contains(newField)) {
+            StringBuilder info = new StringBuilder();
+            info.append(information.getText());
+            info.append(newField);
+            information.setText(info.toString());
+        }
     }
 
     private void mAddScopeConstraint(List<String> subLimes) {
@@ -172,6 +187,8 @@ class MenuPanel extends JPanel {
                         sudoku.setValue(i, j, 0);
                     }
                 }
+
+                information.setText("Less constraints:");
                 updateRelatedBoard(in_frame);
             }
         });
@@ -256,12 +273,34 @@ class MenuPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 copySudoku(sudoku, savedSudoku);
 
+                StringBuilder info = new StringBuilder();
+
+                info.append("Less constraints:");
+
+                updateInformation(info);
+
                 updateRelatedBoard(in_frame);
             }
         });
 
         add(undoButton, gbc);
         gbc.gridy++;
+    }
+
+    private void updateInformation(StringBuilder info) {
+        for (LessConstraint s : sudoku.getLessConstraints()) {
+            String line = "\n"  + s.left.getX() + " " +
+                    s.left.getY() + " < " +
+                    s.right.getX() + " " +
+                    s.right.getY();
+
+            if (!information.getText().contains(line)) {
+                info.append(line);
+                information.setText(info.toString());
+            }
+        }
+
+        information.setText(info.toString());
     }
 
     public void makeAddConstraintButton(JFrame in_frame) {
@@ -340,5 +379,16 @@ class MenuPanel extends JPanel {
                 }
             }
         }
+    }
+
+    public void makeInformationPanel() {
+       String text = "Less constraints:";
+
+       StringBuilder info = new StringBuilder();
+       info.append(text);
+
+       updateInformation(info);
+
+       add(information, gbc);
     }
 }

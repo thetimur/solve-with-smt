@@ -5,6 +5,7 @@ import java.awt.event.FocusListener;
 
 class SudokuBoard {
     private final JPanel board;
+    private final JTextArea local_info = new JTextArea();
     Cell[][] fields;
 
     static class Cell extends JPanel {
@@ -63,7 +64,9 @@ class SudokuBoard {
 
                 fields[i][j].getField().addFocusListener(new FocusListener() {
                     @Override
-                    public void focusGained(FocusEvent e) {}
+                    public void focusGained(FocusEvent e) {
+                        sudoku.getConstraint(finalI, finalJ);
+                    }
 
                     @Override
                     public void focusLost(FocusEvent e) {
