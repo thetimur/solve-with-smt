@@ -186,7 +186,7 @@ class MenuPanel extends JPanel {
         saveButton.addActionListener(enterPress -> {
                     File filePath = new File("sudoku");
                     try {
-                        FileWriter writer = new FileWriter(filePath + "\\tmp.sudoku", false);
+                        FileWriter writer = new FileWriter(filePath + "/tmp.sudoku", false);
 
                         for (int i = 0; i < sudoku.getHeight(); i++) {
                             StringBuilder line = new StringBuilder();
