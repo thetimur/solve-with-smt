@@ -21,12 +21,14 @@ class App {
             menu.makeLoadButton(frame);
             menu.makeResetButton(frame);
             menu.makeSaveButton();
+            menu.makeUndoButton(frame);
+            menu.makeAddConstraintButton(frame);
 
             frame.add(menu, BorderLayout.AFTER_LINE_ENDS);
 
             frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
             frame.setTitle("SMT SUDOKU SOLVER");
-            frame.setSize(400, 400);
+            frame.setSize(600, 600);
 
             frame.setVisible(true);
 

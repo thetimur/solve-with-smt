@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 class SudokuBoard {
     private final JPanel board;
@@ -26,6 +28,16 @@ class SudokuBoard {
             } else {
                 setBackground(Color.cyan);
             }
+
+            int[] flags = new int[2];
+
+            if (cell.getY() % 3 == 0) {
+                flags[1] = 3;
+            }
+            if (cell.getX() % 3 == 0) {
+                flags[0] = 3;
+            }
+            setBorder(BorderFactory.createEmptyBorder(flags[0], flags[1], 0, 0));
         }
 
         public JTextField getField() {
@@ -53,9 +65,13 @@ class SudokuBoard {
 
                 int finalJ = j;
                 int finalI = i;
-                fields[i][j].getField().addActionListener(new ActionListener() {
+
+                fields[i][j].getField().addFocusListener(new FocusListener() {
                     @Override
-                    public void actionPerformed(ActionEvent e) {
+                    public void focusGained(FocusEvent e) {}
+
+                    @Override
+                    public void focusLost(FocusEvent e) {
                         if (fields[finalI][finalJ].getField().getText().equals("") ||
                                 fields[finalI][finalJ].getField().getText() == null) {
                             sudoku.setValue(finalI, finalJ, 0);
@@ -64,6 +80,7 @@ class SudokuBoard {
                         }
                     }
                 });
+
                 board.add(fields[i][j]);
             }
         }

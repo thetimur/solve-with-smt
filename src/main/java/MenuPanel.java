@@ -14,10 +14,12 @@ class MenuPanel extends JPanel {
     private final JTextField out = new JTextField("Here will appear your results");;
     private final GridBagConstraints gbc = new GridBagConstraints();
     private final SudokuData sudoku;
+    private final SudokuData savedSudoku;
     private final SudokuBoard board;
 
     public MenuPanel(SudokuData in_sudoku, SudokuBoard in_board) {
         sudoku = in_sudoku;
+        savedSudoku = new SudokuData();
         board = in_board;
 
         setBorder(new EmptyBorder(4, 4, 4, 4));
@@ -36,6 +38,8 @@ class MenuPanel extends JPanel {
         solveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                copySudoku(savedSudoku, sudoku);
+
                 try {
                     Solver.solveSudoku(sudoku);
 
@@ -66,6 +70,8 @@ class MenuPanel extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent enterPress) {
+                copySudoku(savedSudoku, sudoku);
+
                 JFileChooser chooser = new JFileChooser();
                 File F;
                 chooser.setCurrentDirectory(new java.io.File("sudoku"));
@@ -95,27 +101,9 @@ class MenuPanel extends JPanel {
                                 List<String> subLimes = Arrays.asList(lines.get(i).split(" "));
 
                                 if (subLimes.get(0).equals("+")) {
-                                    int weight = Integer.parseInt(subLimes.get(1));
-                                    List<ConstraintCell> cells = new ArrayList<>();
-
-                                    for (int j = 2; j < subLimes.size(); j += 2) {
-                                        cells.add(new ConstraintCell(
-                                                Integer.parseInt(subLimes.get(j)),
-                                                Integer.parseInt(subLimes.get(j + 1))
-                                        ));
-                                    }
-
-                                    sudoku.addScopeConstraint(new ScopeConstraint(weight, cells));
+                                    mAddScopeConstraint(subLimes);
                                 } else if (subLimes.get(0).equals("<")) {
-                                    sudoku.addLessConstraint(new LessConstraint(
-                                            new ConstraintCell(
-                                                    Integer.parseInt(subLimes.get(1)),
-                                                    Integer.parseInt(subLimes.get(2))),
-                                            new ConstraintCell(
-                                                    Integer.parseInt(subLimes.get(3)),
-                                                    Integer.parseInt(subLimes.get(4))
-
-                                    )));
+                                    mAddLessConstraint(subLimes);
                                 }
                             }
 
@@ -140,12 +128,40 @@ class MenuPanel extends JPanel {
         gbc.gridy++;
     }
 
+    private void mAddLessConstraint(List<String> subLimes) {
+        sudoku.addLessConstraint(new LessConstraint(
+                new ConstraintCell(
+                        Integer.parseInt(subLimes.get(1)),
+                        Integer.parseInt(subLimes.get(2))),
+                new ConstraintCell(
+                        Integer.parseInt(subLimes.get(3)),
+                        Integer.parseInt(subLimes.get(4))
+
+        )));
+    }
+
+    private void mAddScopeConstraint(List<String> subLimes) {
+        int weight = Integer.parseInt(subLimes.get(1));
+        List<ConstraintCell> cells = new ArrayList<>();
+
+        for (int j = 2; j < subLimes.size(); j += 2) {
+            cells.add(new ConstraintCell(
+                    Integer.parseInt(subLimes.get(j)),
+                    Integer.parseInt(subLimes.get(j + 1))
+            ));
+        }
+
+        sudoku.addScopeConstraint(new ScopeConstraint(weight, cells));
+    }
+
     public void makeResetButton(JFrame in_frame) {
         JButton resetButton = new JButton("Reset");
 
         resetButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                copySudoku(savedSudoku, sudoku);
+
                 sudoku.dropConstraints();
                 for (int i = 0; i < sudoku.getHeight(); i++) {
                     for (int j = 0; j < sudoku.getWidth(); j++) {
@@ -228,6 +244,54 @@ class MenuPanel extends JPanel {
         gbc.gridy++;
     }
 
+    public void makeUndoButton(JFrame in_frame) {
+        JButton undoButton = new JButton("Undo");
+
+        undoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                copySudoku(sudoku, savedSudoku);
+
+                updateRelatedBoard(in_frame);
+            }
+        });
+
+        add(undoButton, gbc);
+        gbc.gridy++;
+    }
+
+    public void makeAddConstraintButton(JFrame in_frame) {
+        JButton addConstraintButton = new JButton("Add constraint");
+
+        JTextField console = new JTextField();
+
+        addConstraintButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                copySudoku(savedSudoku, sudoku);
+
+                List<String> input = Arrays.asList(console.getText().split(" "));
+
+                try {
+                    if (input.get(0).equals("+")) {
+                        mAddScopeConstraint(input);
+                    } else if (input.get(0).equals("<")) {
+                        mAddLessConstraint(input);
+                    }
+                } catch(Exception exp) {
+                    out.setText("Incorrect format!");
+                }
+
+                updateRelatedBoard(in_frame);
+            }
+        });
+
+        add(addConstraintButton, gbc);
+        gbc.gridy++;
+        add(console, gbc);
+        gbc.gridy++;
+    }
+
     private String getFileExtension(File F) {
         String filename = F.getName();
 
@@ -259,11 +323,18 @@ class MenuPanel extends JPanel {
         this.out.setText(text);
     }
 
- /*   @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        //g.drawImage(image, 0, 0, null);
-        g.drawLine(0, 0, 100, 100);
-        g.drawLine(0, 100, 100, 0);
-    }*/
+    private void copySudoku(SudokuData s1, SudokuData s2) {
+        for (int i = 0; i < sudoku.getHeight(); i++) {
+            for (int j = 0; j < sudoku.getWidth(); j++) {
+                s1.setValue(i, j, s2.getValue(i, j));
+                s1.dropConstraints();
+                for (LessConstraint s: s2.getLessConstraints()) {
+                    s1.addLessConstraint(s);
+                }
+                for (ScopeConstraint s: s2.getScopeConstraints()) {
+                    s1.addScopeConstraint(s);
+                }
+            }
+        }
+    }
 }
