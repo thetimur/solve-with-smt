@@ -78,10 +78,10 @@ class SudokuBoard {
                         }
 
                         for (LessConstraint s: lessConstraintLists) {
-                            String line = "\n"  + s.left.getX() + " " +
-                                    s.left.getY() + " < " +
-                                    s.right.getX() + " " +
-                                    s.right.getY();
+                            String line = "\n("  + s.left.getX() + ", " +
+                                    s.left.getY() + ") < (" +
+                                    s.right.getX() + ", " +
+                                    s.right.getY() + ")";
 
                             if (!info.toString().contains(line)) {
                                 info.append(line);
@@ -99,7 +99,7 @@ class SudokuBoard {
                             StringBuilder line = new StringBuilder("\n" + s.getWeight() + " ");
 
                             for (ConstraintCell cell: s.getCells()) {
-                                line.append(cell.getX()).append(" ").append(cell.getY()).append(" ");
+                                line.append("(").append(cell.getX()).append(", ").append(cell.getY()).append(") ");
                             }
 
                             if (!info.toString().contains(line.toString())) {

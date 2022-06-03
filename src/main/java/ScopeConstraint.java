@@ -25,7 +25,6 @@ public class ScopeConstraint {
         int visited = 0;
 
         while (!q.isEmpty()) {
-            visited++;
             ConstraintCell v = q.pollFirst();
             vis[v.getX() * 9 + v.getY()] = true;
 
@@ -39,7 +38,7 @@ public class ScopeConstraint {
             }
         }
 
-        return visited == cells.size();
+        return Arrays.stream(vis).filter(it -> it).count() == cells.size();
     }
 
     private boolean valid(ConstraintCell c) {
