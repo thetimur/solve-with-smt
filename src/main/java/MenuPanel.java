@@ -27,7 +27,6 @@ class MenuPanel extends JPanel {
         gbc.gridy = 1;
         gbc.weightx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-
         add(out);
     }
 
@@ -149,6 +148,7 @@ class MenuPanel extends JPanel {
         resetButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                sudoku.dropConstraints();
                 for (int i = 0; i < sudoku.getHeight(); i++) {
                     for (int j = 0; j < sudoku.getWidth(); j++) {
                         sudoku.setValue(i, j, 0);
