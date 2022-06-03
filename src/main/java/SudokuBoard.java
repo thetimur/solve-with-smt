@@ -10,31 +10,26 @@ class SudokuBoard {
     Cell[][] fields;
 
     static class Cell extends JPanel {
-        private final JTextField assigment;
+        private final JTextField assignment;
 
         Cell(int value, ConstraintCell cell, ScopeConstraint constraint) {
             setLayout(new GridLayout(1, 1, 2, 2));
-            String text;
-            if (value == 0) {
-                text = "";
-            } else {
-                text = Integer.toString(value);
-            }
-            assigment = new JTextField(text);
-            assigment.setHorizontalAlignment(SwingConstants.CENTER);
-            add(assigment);
+            String text = (value == 0) ? "" : Integer.toString(value);
+            assignment = new JTextField(text);
+            assignment.setHorizontalAlignment(SwingConstants.CENTER);
+            add(assignment);
             if (constraint != null && constraint.containsCell(cell.getX(), cell.getY())) {
                 int colorNum = constraint.getWeight() * ScopeConstraint.getId() * 500;
                 Color color = Color.getHSBColor(colorNum % (255*255*255), colorNum % (255*255), colorNum % 255);
                 setBackground(color);
-                assigment.setBackground(color);
+                assignment.setBackground(color);
             } else {
                 setBackground(Color.cyan);
             }
         }
 
         public JTextField getField() {
-            return assigment;
+            return assignment;
         }
     }
 
