@@ -1,9 +1,5 @@
-import ap.terfor.TermOrder;
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
@@ -21,10 +17,9 @@ class SudokuBoard {
             assignment.setHorizontalAlignment(SwingConstants.CENTER);
             add(assignment);
             if (constraint != null && constraint.containsCell(cell.getX(), cell.getY())) {
-                int colorNum = constraint.getWeight() * ScopeConstraint.getId() * 500;
-                Color color = Color.getHSBColor(colorNum % (255*255*255), colorNum % (255*255), colorNum % 255);
-                setBackground(color);
-                assignment.setBackground(color);
+                Color currentColor = Colors.getColor(constraint.getId());
+                setBackground(Color.cyan);
+                assignment.setBackground(currentColor);
             } else {
                 setBackground(Color.cyan);
             }

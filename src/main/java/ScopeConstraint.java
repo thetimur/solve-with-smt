@@ -1,14 +1,12 @@
 import scala.Array;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.IllegalFormatException;
-import java.util.List;
+import java.util.*;
 
 public class ScopeConstraint {
     private int weight;
     private List<ConstraintCell> cells;
-    private static int id = 1;
+    private int id;
+    private static int counter = 1;
 
     public ScopeConstraint(int weight, List<ConstraintCell> cells) throws Exception {
         this.weight = weight;
@@ -16,23 +14,26 @@ public class ScopeConstraint {
         if (!checkConnectivity()) {
             throw new Exception("Cells are not connected");
         }
-        id += cells.size();
+        id = counter++;
     }
 
     private boolean checkConnectivity() {
         Deque<ConstraintCell> q = new ArrayDeque<>();
-
+        Boolean[] vis = new Boolean[81];
+        Arrays.fill(vis, Boolean.FALSE);
         q.add(cells.get(0));
         int visited = 0;
 
         while (!q.isEmpty()) {
             visited++;
             ConstraintCell v = q.pollFirst();
-            final int XX[] = {0, 0, 1, -1};
-            final int YY[] = {1, -1, 0, 0};
+            vis[v.getX() * 9 + v.getY()] = true;
+
+            final int[] XX = {0, 0, 1, -1};
+            final int[] YY = {1, -1, 0, 0};
             for (int dim = 0; dim < 4; dim++) {
                 ConstraintCell to = new ConstraintCell(v.getX() + XX[dim], v.getY() + YY[dim]);
-                if (containsCell(to.getX(), to.getY())) {
+                if (valid(to) && !vis[to.getX() * 9 + to.getY()]) {
                     q.add(to);
                 }
             }
@@ -41,7 +42,11 @@ public class ScopeConstraint {
         return visited == cells.size();
     }
 
-    public static int getId() {
+    private boolean valid(ConstraintCell c) {
+        return c.getX() >= 0 && c.getY() >= 0 && c.getX() < 9 && c.getY() < 9 && containsCell(c.getX(), c.getY());
+    }
+
+    public int getId() {
         return id;
     }
 
