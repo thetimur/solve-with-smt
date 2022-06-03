@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SudokuData {
     private final int[][] field = new int[HEIGHT][WIDTH];
@@ -75,5 +76,13 @@ public class SudokuData {
 
     public List<LessConstraint> getLessConstraints() {
         return lessConstraints;
+    }
+
+    public List<ScopeConstraint> getScopeConstraintsByCell(int i, int j) {
+        return scopeConstraints.stream().filter(it -> it.containsCell(i, j)).collect(Collectors.toList());
+    }
+
+    public List<LessConstraint> getLessConstraintsByCell(int i, int j) {
+        return lessConstraints.stream().filter(it -> it.containsCell(i, j)).collect(Collectors.toList());
     }
 }

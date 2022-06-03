@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.List;
 
 class SudokuBoard {
     private final JPanel board;
@@ -65,7 +66,8 @@ class SudokuBoard {
                 fields[i][j].getField().addFocusListener(new FocusListener() {
                     @Override
                     public void focusGained(FocusEvent e) {
-                        sudoku.getConstraint(finalI, finalJ);
+                        List<LessConstraint> lessConstraintLists = sudoku.getLessConstraintsByCell(finalI, finalJ);
+                        List<ScopeConstraint> scopeConstraintList = sudoku.getScopeConstraintsByCell(finalI, finalJ);
                     }
 
                     @Override
