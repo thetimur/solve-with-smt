@@ -116,8 +116,6 @@ class MenuPanel extends JPanel {
                                                     Integer.parseInt(subLimes.get(4))
 
                                     )));
-                                } else {
-                                    throw new Exception("Unpredicted file Error");
                                 }
                             }
 
@@ -260,4 +258,12 @@ class MenuPanel extends JPanel {
     public void setOut(String text) {
         this.out.setText(text);
     }
+
+ /*   @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        //g.drawImage(image, 0, 0, null);
+        g.drawLine(0, 0, 100, 100);
+        g.drawLine(0, 100, 100, 0);
+    }*/
 }

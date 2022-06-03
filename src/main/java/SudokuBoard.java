@@ -14,7 +14,14 @@ class SudokuBoard {
 
         Cell(int value, ConstraintCell cell, ScopeConstraint constraint) {
             setLayout(new GridLayout(1, 1, 2, 2));
-            assigment = new JTextField(Integer.toString(value));
+            String text;
+            if (value == 0) {
+                text = "";
+            } else {
+                text = Integer.toString(value);
+            }
+            assigment = new JTextField(text);
+            assigment.setHorizontalAlignment(SwingConstants.CENTER);
             add(assigment);
             if (constraint != null && constraint.containsCell(cell.getX(), cell.getY())) {
                 int colorNum = constraint.getWeight() * ScopeConstraint.getId() * 500;
@@ -32,15 +39,7 @@ class SudokuBoard {
     }
 
     SudokuBoard(SudokuData sudoku) {
-        board = new JPanel(new GridLayout(sudoku.getWidth(), sudoku.getHeight())) {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                //g.drawImage(image, 0, 0, null);
-                g.drawLine(0, 0, 100, 100);
-                g.drawLine(0, 100, 100, 0);
-            }
-        };
+        board = new JPanel(new GridLayout(sudoku.getWidth(), sudoku.getHeight()));
 
         board.setBackground(Color.cyan);
         fillBoard(sudoku);
@@ -62,7 +61,12 @@ class SudokuBoard {
                 fields[i][j].getField().addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        sudoku.setValue(finalI, finalJ, Integer.parseInt(fields[finalI][finalJ].getField().getText()));
+                        if (fields[finalI][finalJ].getField().getText().equals("") ||
+                                fields[finalI][finalJ].getField().getText() == null) {
+                            sudoku.setValue(finalI, finalJ, 0);
+                        } else {
+                            sudoku.setValue(finalI, finalJ, Integer.parseInt(fields[finalI][finalJ].getField().getText()));
+                        }
                     }
                 });
                 board.add(fields[i][j]);
