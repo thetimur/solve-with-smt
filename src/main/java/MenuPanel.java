@@ -7,6 +7,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 class MenuPanel extends JPanel {
 
@@ -82,7 +83,7 @@ class MenuPanel extends JPanel {
                         try {
                             BufferedReader reader = new BufferedReader(new FileReader(F));
 
-                            List<String> lines = reader.lines().toList();
+                            List<String> lines = reader.lines().collect(Collectors.toList());
 
                             for (int i = 0; i < sudoku.getHeight(); i++) {
                                 String line = lines.get(i);
