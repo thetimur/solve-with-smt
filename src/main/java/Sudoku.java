@@ -67,7 +67,7 @@ public class Sudoku {
 
         // for (Solvers solver : Solvers.values()) {
         {
-            Solvers solver = Solvers.SMTINTERPOL;
+            Solvers solver = Solvers.PRINCESS;
             try (SolverContext context =
                          SolverContextFactory.createSolverContext(config, logger, notifier, solver)) {
 
